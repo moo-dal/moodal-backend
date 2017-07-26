@@ -58,3 +58,16 @@ def token_create(request):
     }
 
     return JsonResponse(data=data)
+
+
+def get_profile(request, user_id):
+    assert request.method == "GET"
+    assert "HTTP_AUTHORIZATION" in request.META
+
+    token_header = request.META.get("HTTP_AUTHORIZATION")
+    token = token_header[len("moodal token="):]
+    payload = jwt.decode(jwt=token, key=TOKEN_SECRET)
+    assert "id" in payload
+    assert int(user_id) == payload.get("id")
+
+    return JsonResponse(data=payload)
