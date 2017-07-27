@@ -54,7 +54,8 @@ def token_create(request):
     }
     token = jwt.encode(payload=payload, key=TOKEN_SECRET).decode("utf-8")
     data = {
-        "token": token
+        "token": token,
+        "id": user.pk
     }
 
     return JsonResponse(data=data)
@@ -67,7 +68,15 @@ def get_profile(request, user_id):
     token_header = request.META.get("HTTP_AUTHORIZATION")
     token = token_header[len("moodal token="):]
     payload = jwt.decode(jwt=token, key=TOKEN_SECRET)
+    assert "email" in payload
     assert "id" in payload
+    assert "expiry" in payload
     assert int(user_id) == payload.get("id")
 
-    return JsonResponse(data=payload)
+    data = {
+        "email": payload.get("email"),
+        "id": payload.get("id"),
+        "expiry": payload.get("expiry")
+    }
+
+    return JsonResponse(data=data)
