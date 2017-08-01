@@ -4,6 +4,7 @@ from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 import jwt
+from rest_framework.decorators import api_view
 
 from .models import User
 
@@ -13,9 +14,9 @@ TOKEN_EXPIRY_MS = 1000 * 3600 * 3  # 3 hours. 변환해주는 라이브러리가
 # Create your views here.
 
 
+@api_view(['POST'])
 @csrf_exempt
 def user_create(request):
-    assert request.method == "POST"
     assert "email" in request.POST  # verification 로직은 사실 view 레이어가 아니라 serializer 레이어로 옮기는게 좋음!
     assert "password" in request.POST
 
@@ -35,9 +36,9 @@ def user_create(request):
     return JsonResponse(data=data)
 
 
+@api_view(['POST'])
 @csrf_exempt
 def token_create(request):
-    assert request.method == "POST"
     assert "email" in request.POST  # verification 로직은 사실 view 레이어가 아니라 serializer 레이어로 옮기는게 좋음!
     assert "password" in request.POST
 
@@ -61,8 +62,11 @@ def token_create(request):
     return JsonResponse(data=data)
 
 
+@api_view(['GET'])
 def get_profile(request, user_id):
-    assert request.method == "GET"
+    """
+    주석을 적으면 swagger 가 이를 사용한다.
+    """
     assert "HTTP_AUTHORIZATION" in request.META
 
     token_header = request.META.get("HTTP_AUTHORIZATION")
