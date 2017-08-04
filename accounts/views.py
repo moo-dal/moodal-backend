@@ -63,7 +63,7 @@ def token_create(request):
 
 
 @api_view(['GET'])
-def get_profile(request, user_id):
+def profile_detail(request, user_id):
     """
     주석을 적으면 swagger 가 이를 사용한다.
     """
