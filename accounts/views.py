@@ -27,32 +27,6 @@ class TokenCreate(generics.CreateAPIView):
     serializer_class = TokenSerializer
 
 
-@api_view(['POST'])
-@csrf_exempt
-def token_create(request):
-    assert "email" in request.POST  # verification 로직은 사실 view 레이어가 아니라 serializer 레이어로 옮기는게 좋음!
-    assert "password" in request.POST
-
-    email = request.POST.get("email")
-    password = request.POST.get("password")
-
-    user = User.objects.get(email=email)
-    assert user.check_password(password)
-
-    payload = {
-        "email": email,
-        "id": user.pk,
-        "expiry": int(time.time() * 1000) + TOKEN_EXPIRY_MS
-    }
-    token = jwt.encode(payload=payload, key=TOKEN_SECRET).decode("utf-8")
-    data = {
-        "token": token,
-        "id": user.pk
-    }
-
-    return JsonResponse(data=data)
-
-
 @api_view(['GET'])
 def profile_detail(request, user_id):
     """
