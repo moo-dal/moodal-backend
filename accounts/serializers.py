@@ -53,3 +53,9 @@ class TokenSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         return instance
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("email", "nickname", )
