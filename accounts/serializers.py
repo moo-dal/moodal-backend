@@ -40,15 +40,16 @@ class TokenSerializer(serializers.Serializer):
         payload = {
             "email": validated_data["email"],
             "id": user.pk,
+            "nickname": user.nickname,
             "expiry": int(time.time() * 1000) + TOKEN_EXPIRY_MS
         }
 
-        token = jwt.encode(payload=payload, key=TOKEN_SECRET).decode("utf-8")
+        resp = {
+            "token": jwt.encode(payload=payload, key=TOKEN_SECRET).decode("utf-8"),
+            "id": user.pk
+        }
 
-        return dict(token=token)
+        return resp
 
     def to_representation(self, instance):
-        ret = {
-            "token": instance["token"]
-        }
-        return ret
+        return instance
