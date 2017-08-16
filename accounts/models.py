@@ -7,3 +7,5 @@ from django.db import models
 class User(AbstractUser):
     class Meta(object):
         unique_together = ('email',)
+
+    nickname = models.CharField(max_length=100)

@@ -1,30 +1,33 @@
-from django.http.response import JsonResponse
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics
 
-from .models import User
+from .authentications import JWTAuthentication
+from .serializers import ProfileSerializer, TokenSerializer, UserSerializer
 
-# Create your views here.
+TOKEN_SECRET = "temp-secret"  # 배포 환경에서 config.py 등의 파일로 빼내고 VCS 에서 제거할 예정~
+TOKEN_EXPIRY_MS = 1000 * 3600 * 3  # 3 hours. 변환해주는 라이브러리가 있으면 좋겠다.
 
 
-@csrf_exempt
-def user_create(request):
-    assert request.method == "POST"
-    assert "email" in request.POST  # verification 로직은 사실 view 레이어가 아니라 serializer 레이어로 옮기는게 좋음!
-    assert "password" in request.POST
+class UserCreate(generics.CreateAPIView):
+    """
+    새로운 계정을 생성합니다.
+    """
+    serializer_class = UserSerializer
 
-    email = request.POST.get("email")
-    password = request.POST.get("password")
 
-    user = User()
-    user.email = email
-    user.set_password(password)  # user.password = password 로 바로 assign 하면 raw password 가 그대로 저장되어버린다.
-    user.username = email  # Django 에서 username 컬럼이 UNIQUE constraint -> IntegrityError 를 피하기 위한 임시방편!
-    user.save()
+class TokenCreate(generics.CreateAPIView):
+    """
+    계정에 접근할 수 있는 access token 을 생성합니다.
+    """
+    serializer_class = TokenSerializer
 
-    data = {
-        "id": user.pk
-    }
 
-    return JsonResponse(data=data)
+class ProfileRetrieve(generics.RetrieveAPIView):
+    """
+    계정 프로필 정보를 조회합니다.
+    """
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = ProfileSerializer
 
+    def get_object(self):
+        assert int(self.kwargs.get("user_id")) == self.request.user.pk
+        return self.request.user

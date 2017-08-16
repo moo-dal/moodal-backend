@@ -25,19 +25,21 @@ SECRET_KEY = 'd)z^b56%&_+hu@f89vf)m!w+e6)!)b_lzezyf(#(ghs%_&gucp'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'accounts',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_swagger',
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +124,18 @@ STATIC_URL = '/static/'
 
 # Overrides Django default User model
 AUTH_USER_MODEL = 'accounts.User'
+
+# Django REST Swagger settings.
+# https://django-rest-swagger.readthedocs.io/en/latest/settings/
+SWAGGER_SETTINGS = {
+    "JSON_EDITOR": True,
+    "SHOW_REQUEST_HEADERS": True,
+    "USE_SESSION_AUTH": False,
+    "SECURITY_DEFINITIONS": {
+        "api_key": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "AUTHORIZATION"
+        }
+    },
+}
