@@ -2,27 +2,35 @@ import time
 
 from rest_framework import serializers
 
-from .models import Scheduling
-
+from .models import Schedule
+from accounts.serializers import UserSerializer
 
 class ScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Schedule
+        fields = ("name", "url", "start_date", "end_date", "is_shared", "is_public", "user")
+        #categori_name추가해야함
+    '''
+    모델 Serializer 를 상속하므로 상단처럼 하면 필드 자동 생성
     name = serializers.CharField(max_length=50)
     url = serializers.URLField()
     start_date = serializers.DateField()
     end_date = serializers.DateField()
     is_shared = serializers.BooleanField()
     is_public = serializers.BooleanField()
-
+    '''
     def create(self, validated_data):
-        scheduling = Scheduling()
-        scheduling.name = validated_data["name"]
-        scheduling.url = validated_data["url"]
-        scheduling.start_date = validated_data["start_date"]
-        scheduling.end_date = validated_data["end_date"]
-        scheduling.is_shared = validated_data["is_shared"]
-        scheduling.is_public = validated_data["is_public"]
-        scheduling.save()
-        return scheduling
+        user_id = UserSerializer().get_fields() #이부분이 옳게 불러온건지를 모르겠어
+        schedule = Schedule()
+        schedule.name = validated_data["name"]
+        schedule.url = validated_data["url"]
+        schedule.start_date = validated_data["start_date"]
+        schedule.end_date = validated_data["end_date"]
+        schedule.is_shared = validated_data["is_shared"]
+        schedule.is_public = validated_data["is_public"]
+        schedule.user_id = user_id
+        schedule.save()
+        return schedule
 
     def to_representation(self, instance):
         result = {

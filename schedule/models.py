@@ -10,5 +10,5 @@ class Schedule(models.Model):
     end_date = models.DateField()
     is_shared = models.BooleanField()
     is_public = models.BooleanField()
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     #category_name = models.ForeignKey()
