@@ -19,7 +19,7 @@ class Schedule(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE)
+    calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, null=True)
 
 
 class Mapping(models.Model):
