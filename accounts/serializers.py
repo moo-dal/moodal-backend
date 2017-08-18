@@ -32,8 +32,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TokenSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(max_length=50)  # max_length 는 별 의미 없음.
+    email = serializers.EmailField(write_only=True)
+    password = serializers.CharField(max_length=128, write_only=True)
+    token = serializers.CharField(read_only=True)
+    user = serializers.JSONField(read_only=True)
 
     def create(self, validated_data):
         user = User.objects.get(email=validated_data["email"])
@@ -46,14 +48,11 @@ class TokenSerializer(serializers.Serializer):
             "expiry": int(time.time() * 1000) + TOKEN_EXPIRY_MS
         }
 
-        resp = {
+        instance = {
             "token": jwt.encode(payload=payload, key=TOKEN_SECRET).decode("utf-8"),
-            "id": user.pk
+            "user": UserSerializer().to_representation(user)
         }
 
-        return resp
-
-    def to_representation(self, instance):
         return instance
 
 
