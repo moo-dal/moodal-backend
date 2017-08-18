@@ -54,9 +54,3 @@ class TokenSerializer(serializers.Serializer):
         }
 
         return instance
-
-
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("email", "nickname", )
