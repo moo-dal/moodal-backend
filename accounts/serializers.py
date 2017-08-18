@@ -10,15 +10,17 @@ TOKEN_EXPIRY_MS = 1000 * 3600 * 3  # 3 hours. 변환해주는 라이브러리가
 
 
 class UserSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="username")
+
     class Meta:
         model = User
-        fields = ("email", "password", "nickname",)
+        fields = ("email", "password", "name")
 
     def create(self, validated_data):
         user = User()
         user.email = validated_data["email"]
         user.set_password(validated_data["password"])  # user.password = password 로 바로 assign 하면 안됨
-        user.username = validated_data["email"]  # Django 에서 username 컬럼이 UNIQUE constraint -> 임시방편!
+        user.username = validated_data["username"]  # Django 에서 username 컬럼이 UNIQUE constraint -> 임시방편!
         user.save()
         return user
 
