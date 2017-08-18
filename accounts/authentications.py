@@ -11,8 +11,7 @@ TOKEN_EXPIRY_MS = 1000 * 3600 * 3  # 3 hours. 변환해주는 라이브러리가
 
 class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
-        token_header = request.META.get("HTTP_AUTHORIZATION")
-        token = token_header[len("moodal token="):]
+        token = request.META.get("HTTP_AUTHORIZATION")
         payload = jwt.decode(jwt=token, key=TOKEN_SECRET)
 
         pk = payload.get("id")
