@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_swagger',
     'accounts.apps.AccountsConfig',
+    'schedule.apps.ScheduleConfig',
 ]
 
 MIDDLEWARE = [

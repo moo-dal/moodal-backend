@@ -4,11 +4,13 @@ from rest_framework import serializers
 
 from .models import Schedule
 from accounts.serializers import UserSerializer
+from accounts.authentications import JWTAuthentication
+
 
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedule
-        fields = ("name", "url", "start_date", "end_date", "is_shared", "is_public", "user")
+        fields = ("title", "url", "start_date", "end_date", "is_shared", "is_public", "user")
         #categori_name추가해야함
     '''
     모델 Serializer 를 상속하므로 상단처럼 하면 필드 자동 생성
@@ -20,9 +22,10 @@ class ScheduleSerializer(serializers.ModelSerializer):
     is_public = serializers.BooleanField()
     '''
     def create(self, validated_data):
-        user_id = UserSerializer().get_fields() #이부분이 옳게 불러온건지를 모르겠어
+        #user_id = UserSerializer().get_fields().pop("user_id") #이부분이 옳게 불러온건지를 모르겠어
+        user_id = self.context['request'].user.id
         schedule = Schedule()
-        schedule.name = validated_data["name"]
+        schedule.title = validated_data["title"]
         schedule.url = validated_data["url"]
         schedule.start_date = validated_data["start_date"]
         schedule.end_date = validated_data["end_date"]

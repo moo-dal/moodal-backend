@@ -4,7 +4,7 @@ from accounts.models import User
 # Create your models here.
 
 class Schedule(models.Model):
-    name = models.CharField(max_length=50)
+    title = models.CharField(max_length=50)
     url = models.URLField()
     start_date = models.DateField()
     end_date = models.DateField()
