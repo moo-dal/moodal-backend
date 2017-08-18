@@ -22,5 +22,6 @@ schema_view = get_swagger_view(title='Moodal API')
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('accounts.urls')),
-    url(r'^docs/', schema_view)
+    url(r'^docs/', schema_view),
+    url(r'^schedules/', include('schedule.urls'))
 ]
