@@ -46,7 +46,7 @@ class TokenSerializer(serializers.Serializer):
         payload = {
             "email": validated_data["email"],
             "id": user.pk,
-            "nickname": user.nickname,
+            "name": user.username,
             "expiry": int(time.time() * 1000) + TOKEN_EXPIRY_MS
         }
 

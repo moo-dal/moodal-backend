@@ -17,11 +17,11 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
         pk = payload.get("id")
         email = payload.get("email")
-        nickname = payload.get("nickname")
+        name = payload.get("username")
         expiry = payload.get("expiry")
 
         assert int(time.time() * 1000) < expiry
 
-        user = User(pk=pk, email=email, nickname=nickname)
+        user = User(pk=pk, email=email, username=name)
 
         return user, None
