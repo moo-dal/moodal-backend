@@ -129,14 +129,14 @@ AUTH_USER_MODEL = 'accounts.User'
 # Django REST Swagger settings.
 # https://django-rest-swagger.readthedocs.io/en/latest/settings/
 SWAGGER_SETTINGS = {
-    "JSON_EDITOR": True,
-    "SHOW_REQUEST_HEADERS": True,
-    "USE_SESSION_AUTH": False,
-    "SECURITY_DEFINITIONS": {
-        "api_key": {
-            "type": "apiKey",
-            "in": "header",
-            "name": "AUTHORIZATION"
+    'JSON_EDITOR': True,
+    'SHOW_REQUEST_HEADERS': True,
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'AUTHORIZATION'
         }
     },
 }
