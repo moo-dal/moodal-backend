@@ -10,8 +10,7 @@ from accounts.authentications import JWTAuthentication
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedule
-        fields = ("title", "url", "start_date", "end_date", "is_shared", "is_public", "user")
-        #categori_name추가해야함
+        fields = ("title", "url", "start_date", "end_date")
     '''
     모델 Serializer 를 상속하므로 상단처럼 하면 필드 자동 생성
     name = serializers.CharField(max_length=50)
