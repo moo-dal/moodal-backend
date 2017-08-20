@@ -1,10 +1,17 @@
 from rest_framework import generics
 
 from accounts.authentications import JWTAuthentication
-from .serializers import ScheduleSerializer
+from .serializers import PreferenceSerializer, ScheduleSerializer
 
 
-# Create your views here.
+class PreferenceCreate(generics.CreateAPIView):
+    """
+    관심사 공유달력을 추가합니다.
+    calendar_ids 필드에는 , 로 구분된 calendar id 들을 문자열로 넣어주세요.
+    """
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = PreferenceSerializer
+
 
 class ScheduleCreate(generics.CreateAPIView):
     """

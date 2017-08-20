@@ -9,6 +9,9 @@ class Calendar(models.Model):
 
 
 class Preference(models.Model):
+    class Meta:
+        unique_together = (("user", "calendar"), )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE)
 
