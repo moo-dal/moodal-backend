@@ -29,10 +29,11 @@ class PreferenceSerializer(serializers.Serializer):
 
 class ScheduleSerializer(serializers.ModelSerializer):
     calendar_id = serializers.IntegerField()
+    user_id = serializers.IntegerField()
 
     class Meta:
         model = Schedule
-        fields = ("title", "url", "start_date", "end_date", "calendar_id")
+        fields = ("title", "url", "start_date", "end_date", "calendar_id", "user_id")
     '''
     모델 Serializer 를 상속하므로 상단처럼 하면 필드 자동 생성
     name = serializers.CharField(max_length=50)
@@ -60,9 +61,3 @@ class ScheduleSerializer(serializers.ModelSerializer):
         schedule.save()
 
         return schedule
-
-    def to_representation(self, instance):
-        result = {
-            "result": "success"
-        }
-        return result
