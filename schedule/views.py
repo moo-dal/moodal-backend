@@ -1,7 +1,9 @@
+from django.db.models import Q
 from rest_framework import generics
 
 from accounts.authentications import JWTAuthentication
-from .models import Calendar
+from .filters import ScheduleListFilter
+from .models import Calendar, Schedule
 from .serializers import CalendarSerializer, PreferenceSerializer, ScheduleSerializer
 
 
@@ -23,9 +25,22 @@ class PreferenceCreate(generics.CreateAPIView):
     serializer_class = PreferenceSerializer
 
 
-class ScheduleCreate(generics.CreateAPIView):
+class ScheduleListCreate(generics.ListCreateAPIView):
     """
     새로운 일정을 생성(추가)합니다
     """
-    serializer_class = ScheduleSerializer
     authentication_classes = (JWTAuthentication, )
+    filter_backends = (ScheduleListFilter, )
+    serializer_class = ScheduleSerializer
+
+    def get_queryset(self):
+        # https://docs.djangoproject.com/en/1.11/ref/models/querysets/#year
+        # https://docs.djangoproject.com/en/1.11/ref/models/querysets/#month
+        # https://stackoverflow.com/a/3989905
+
+        year_month = self.request.query_params["year_month"]
+        year, month = year_month.split("-")
+
+        queryset = Schedule.objects.filter((Q(start_date__year=year) & Q(start_date__month=month)) |
+                                           (Q(end_date__year=year) & Q(end_date__month=month)))
+        return queryset
