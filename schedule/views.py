@@ -1,7 +1,17 @@
 from rest_framework import generics
 
 from accounts.authentications import JWTAuthentication
-from .serializers import PreferenceSerializer, ScheduleSerializer
+from .models import Calendar
+from .serializers import CalendarSerializer, PreferenceSerializer, ScheduleSerializer
+
+
+class CalendarList(generics.ListAPIView):
+    # http://www.django-rest-framework.org/api-guide/generic-views/#examples
+    """
+    공유달력 목록을 조회합니다.
+    """
+    queryset = Calendar.objects.all()
+    serializer_class = CalendarSerializer
 
 
 class PreferenceCreate(generics.CreateAPIView):

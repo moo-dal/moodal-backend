@@ -5,6 +5,12 @@ from rest_framework import serializers
 from .models import Calendar, Preference, Schedule, User
 
 
+class CalendarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Calendar
+        fields = "__all__"
+
+
 class PreferenceSerializer(serializers.Serializer):
     calendar_id = serializers.IntegerField()
     user_id = serializers.IntegerField(read_only=True)
