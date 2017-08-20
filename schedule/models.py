@@ -7,6 +7,9 @@ from accounts.models import User
 class Calendar(models.Model):
     title = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.title
+
 
 class Preference(models.Model):
     class Meta:
