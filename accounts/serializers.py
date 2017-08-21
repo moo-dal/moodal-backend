@@ -10,12 +10,14 @@ TOKEN_EXPIRY_MS = 1000 * 3600 * 3  # 3 hours. 변환해주는 라이브러리가
 
 
 class UserSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source="pk", read_only=True)
     name = serializers.CharField(source="username")
-    password_check = serializers.CharField(max_length=128)
+    password_check = serializers.CharField(max_length=128, write_only=True)
 
     class Meta:
         model = User
-        fields = ("email", "password", "name", "password_check")
+        fields = ("id", "email", "password", "name", "password_check")
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         if validated_data["password"] != validated_data["password_check"]:
@@ -28,16 +30,12 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-    def to_representation(self, instance):
-        ret = {
-            "id": instance.pk
-        }
-        return ret
-
 
 class TokenSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(max_length=50)  # max_length 는 별 의미 없음.
+    email = serializers.EmailField(write_only=True)
+    password = serializers.CharField(max_length=128, write_only=True)
+    token = serializers.CharField(read_only=True)
+    user = serializers.JSONField(read_only=True)
 
     def create(self, validated_data):
         user = User.objects.get(email=validated_data["email"])
@@ -46,22 +44,13 @@ class TokenSerializer(serializers.Serializer):
         payload = {
             "email": validated_data["email"],
             "id": user.pk,
-            "nickname": user.nickname,
+            "name": user.username,
             "expiry": int(time.time() * 1000) + TOKEN_EXPIRY_MS
         }
 
-        resp = {
+        instance = {
             "token": jwt.encode(payload=payload, key=TOKEN_SECRET).decode("utf-8"),
-            "id": user.pk
+            "user": UserSerializer().to_representation(user)
         }
 
-        return resp
-
-    def to_representation(self, instance):
         return instance
-
-
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("email", "nickname", )
