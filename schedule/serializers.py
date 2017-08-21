@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers
 
@@ -44,3 +45,19 @@ class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendar
         fields = "__all__"
+
+
+class PreferenceSerializer(serializers.Serializer):
+    calendar_id = serializers.IntegerField()
+    user_id = serializers.IntegerField(read_only=True)
+
+    def create(self, validated_data):
+        calendar_id = validated_data["calendar_id"]
+        user_id = self.context['request'].user.id
+
+        try:
+            return Preference.objects.get(calendar_id=calendar_id, user_id=user_id)
+        except ObjectDoesNotExist:
+            calendar = Calendar.objects.get(pk=calendar_id)
+            user = User.objects.get(pk=user_id)
+            return Preference.objects.create(calendar=calendar, user=user)
