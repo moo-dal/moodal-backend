@@ -1,10 +1,7 @@
-import time
 
 from rest_framework import serializers
 
 from .models import Schedule
-from accounts.serializers import UserSerializer
-from accounts.authentications import JWTAuthentication
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
@@ -22,7 +19,6 @@ class ScheduleSerializer(serializers.ModelSerializer):
     is_public = serializers.BooleanField()
     '''
     def create(self, validated_data):
-        #user_id = UserSerializer().get_fields().pop("user_id") #이부분이 옳게 불러온건지를 모르겠어
         user_id = self.context['request'].user.id
         schedule = Schedule()
         schedule.title = validated_data["title"]
