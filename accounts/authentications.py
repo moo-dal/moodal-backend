@@ -1,6 +1,7 @@
 import time
 
 import jwt
+from jwt.exceptions import DecodeError
 from rest_framework import authentication
 
 from .models import User
@@ -11,17 +12,19 @@ TOKEN_EXPIRY_MS = 1000 * 3600 * 3  # 3 hours. 변환해주는 라이브러리가
 
 class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
-        token_header = request.META.get("HTTP_AUTHORIZATION")
-        token = token_header[len("moodal token="):]
-        payload = jwt.decode(jwt=token, key=TOKEN_SECRET)
+        try:
+            token = request.META.get("HTTP_AUTHORIZATION")
+            payload = jwt.decode(jwt=token, key=TOKEN_SECRET)
 
-        pk = payload.get("id")
-        email = payload.get("email")
-        nickname = payload.get("nickname")
-        expiry = payload.get("expiry")
+            pk = payload.get("id")
+            email = payload.get("email")
+            name = payload.get("username")
+            expiry = payload.get("expiry")
 
-        assert int(time.time() * 1000) < expiry
+            assert int(time.time() * 1000) < expiry
 
-        user = User(pk=pk, email=email, nickname=nickname)
+            user = User(pk=pk, email=email, username=name)
 
-        return user, None
+            return user, None
+        except DecodeError:
+            return None, None
