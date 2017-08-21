@@ -1,7 +1,7 @@
 
 from rest_framework import serializers
 
-from .models import Schedule
+from .models import Calendar, Schedule, User
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
@@ -38,3 +38,9 @@ class ScheduleSerializer(serializers.ModelSerializer):
         schedule.save()
 
         return schedule
+
+
+class CalendarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Calendar
+        fields = "__all__"
