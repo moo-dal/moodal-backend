@@ -2,7 +2,7 @@ from rest_framework import generics
 
 from accounts.authentications import JWTAuthentication
 from .models import Calendar
-from .serializers import CalendarSerializer, ScheduleSerializer
+from .serializers import CalendarSerializer, PreferenceSerializer, ScheduleSerializer
 
 
 # Create your views here.
