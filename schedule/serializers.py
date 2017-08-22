@@ -1,17 +1,17 @@
-import time
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers
 
-from .models import Schedule
-from accounts.serializers import UserSerializer
-from accounts.authentications import JWTAuthentication
+from .models import Calendar, Schedule, User
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
+    calendar_id = serializers.IntegerField()
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Schedule
-        fields = ("title", "url", "start_date", "end_date", "is_shared", "is_public", "user")
-        #categori_name추가해야함
+        fields = ("title", "url", "start_date", "end_date", "calendar_id", "user_id")
     '''
     모델 Serializer 를 상속하므로 상단처럼 하면 필드 자동 생성
     name = serializers.CharField(max_length=50)
@@ -22,21 +22,42 @@ class ScheduleSerializer(serializers.ModelSerializer):
     is_public = serializers.BooleanField()
     '''
     def create(self, validated_data):
-        #user_id = UserSerializer().get_fields().pop("user_id") #이부분이 옳게 불러온건지를 모르겠어
-        user_id = self.context['request'].user.id
         schedule = Schedule()
         schedule.title = validated_data["title"]
         schedule.url = validated_data["url"]
         schedule.start_date = validated_data["start_date"]
         schedule.end_date = validated_data["end_date"]
-        schedule.is_shared = validated_data["is_shared"]
-        schedule.is_public = validated_data["is_public"]
-        schedule.user_id = user_id
+
+        user_id = self.context['request'].user.id
+        calendar_id = validated_data["calendar_id"]
+        user = User.objects.get(pk=user_id)
+        calendar = Calendar.objects.get(pk=calendar_id)
+
+        schedule.user = user
+        schedule.calendar = calendar
+
         schedule.save()
+
         return schedule
 
-    def to_representation(self, instance):
-        result = {
-            "result": "success"
-        }
-        return result
+
+class CalendarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Calendar
+        fields = "__all__"
+
+
+class PreferenceSerializer(serializers.Serializer):
+    calendar_id = serializers.IntegerField()
+    user_id = serializers.IntegerField(read_only=True)
+
+    def create(self, validated_data):
+        calendar_id = validated_data["calendar_id"]
+        user_id = self.context['request'].user.id
+
+        try:
+            return Preference.objects.get(calendar_id=calendar_id, user_id=user_id)
+        except ObjectDoesNotExist:
+            calendar = Calendar.objects.get(pk=calendar_id)
+            user = User.objects.get(pk=user_id)
+            return Preference.objects.create(calendar=calendar, user=user)
