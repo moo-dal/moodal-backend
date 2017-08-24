@@ -1,9 +1,9 @@
 from django.conf.urls import url
 
-from .views import TokenCreate, UserCreate, UserRetrieve
+from .views import TokenCreate, UserCreate, TokenValidate
 
 urlpatterns = [
     url(r'^$', UserCreate.as_view()),
-    url(r'^(?P<user_id>\d+)/$', UserRetrieve.as_view()),
     url(r'^tokens/$', TokenCreate.as_view()),
+    url(r'^tokens/validate/$', TokenValidate.as_view())
 ]

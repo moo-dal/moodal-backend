@@ -23,14 +23,13 @@ class TokenCreate(generics.CreateAPIView):
     serializer_class = TokenSerializer
 
 
-class UserRetrieve(generics.RetrieveAPIView):
+class TokenValidate(generics.RetrieveAPIView):
     """
-    계정 정보를 조회합니다.
+    토큰을 검증합니다. 올바른 토큰일 경우 유저 정보를 내려줍니다.
     """
     authentication_classes = (JWTAuthentication, )
     serializer_class = UserSerializer
 
     def get_object(self):
-        assert int(self.kwargs.get("user_id")) == self.request.user.pk
         user = User.objects.get(pk=self.request.user.pk)
         return user

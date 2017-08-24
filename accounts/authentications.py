@@ -3,6 +3,7 @@ import time
 import jwt
 from jwt.exceptions import DecodeError
 from rest_framework import authentication
+from rest_framework.exceptions import NotAuthenticated, AuthenticationFailed
 
 from .models import User
 
@@ -14,6 +15,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
         try:
             token = request.META.get("HTTP_AUTHORIZATION")
+            assert token is not None
             payload = jwt.decode(jwt=token, key=TOKEN_SECRET)
 
             pk = payload.get("id")
@@ -26,5 +28,11 @@ class JWTAuthentication(authentication.BaseAuthentication):
             user = User(pk=pk, email=email, username=name)
 
             return user, None
+        except AssertionError:
+            raise NotAuthenticated()
         except DecodeError:
-            return None, None
+            raise AuthenticationFailed()
+
+    def authenticate_header(self, request):
+        # authenticate_header 메서드에서 문자열 값을 반환하지 않으면, 401 대신 403 코드를 사용한다.
+        return "Authorization"
