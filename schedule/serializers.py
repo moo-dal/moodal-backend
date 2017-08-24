@@ -12,7 +12,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Schedule
-        fields = ("title", "url", "start_date", "end_date", "calendar_id", "user_id", "is_public")
+        fields = ("id", "title", "url", "start_date", "end_date", "calendar_id", "user_id", "is_public")
     '''
     모델 Serializer 를 상속하므로 상단처럼 하면 필드 자동 생성
     name = serializers.CharField(max_length=50)
