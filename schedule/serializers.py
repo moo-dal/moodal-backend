@@ -47,6 +47,14 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
         return schedule
 
+    def update(self, instance, validated_data):
+        instance_calendar_id = None if instance.calendar is None else instance.calendar.id
+        calendar_id = validated_data.get("calendar_id", instance_calendar_id)
+        if calendar_id is not instance_calendar_id:
+            instance.calendar = Calendar.objects.get(pk=calendar_id)
+            instance.save()
+        return instance
+
 
 class CalendarSerializer(serializers.ModelSerializer):
     class Meta:

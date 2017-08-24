@@ -69,3 +69,12 @@ class MappingCreate(generics.CreateAPIView):
     """
     authentication_classes = (JWTAuthentication, )
     serializer_class = MappingSerializer
+
+
+class ScheduleUpdate(generics.UpdateAPIView):
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = ScheduleSerializer
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        return Schedule.objects.filter(user_id=user_id)
