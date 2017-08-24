@@ -18,6 +18,7 @@ class UserCreate(generics.CreateAPIView):
 class TokenCreate(generics.CreateAPIView):
     """
     계정에 접근할 수 있는 access token 을 생성합니다.
+    응답받은 token 을 HTTP Header 에 "Authorization" 을 key 로 넣어서 인증합니다. 
     """
     serializer_class = TokenSerializer
 
