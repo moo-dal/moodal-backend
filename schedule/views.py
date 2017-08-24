@@ -71,7 +71,13 @@ class MappingCreate(generics.CreateAPIView):
     serializer_class = MappingSerializer
 
 
-class ScheduleUpdate(generics.UpdateAPIView):
+class ScheduleRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    """
+    개인 달력의 일정을 공유 달력에 추가할때 / 일정을 삭제할때 사용합니다.
+    
+    현재는 calendar_id 파라미터만 처리합니다.
+    나머지 파라미터들은 기존과 동일한 값을 올려줘야 합니다.
+    """
     authentication_classes = (JWTAuthentication, )
     serializer_class = ScheduleSerializer
 
