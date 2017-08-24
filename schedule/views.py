@@ -4,7 +4,7 @@ from rest_framework import generics
 from accounts.authentications import JWTAuthentication
 from .filters import ScheduleListFilter
 from .models import Calendar, Preference, Schedule
-from .serializers import CalendarSerializer, PreferenceSerializer, ScheduleSerializer
+from .serializers import CalendarSerializer, PreferenceSerializer, ScheduleSerializer, MappingSerializer
 
 
 class ScheduleListCreate(generics.ListCreateAPIView):
@@ -55,9 +55,17 @@ class PreferenceListCreate(generics.ListCreateAPIView):
     """
     관심사 공유달력을 추가하고 조회합니다.
     """
-    authentication_classes = (JWTAuthentication,)
+    authentication_classes = (JWTAuthentication, )
     serializer_class = PreferenceSerializer
 
     def get_queryset(self):
         user_id = self.request.user.id
         return Preference.objects.filter(user_id=user_id)
+
+
+class MappingCreate(generics.CreateAPIView):
+    """
+    공유 달력의 일정을 개인 달력으로 가져옵니다.
+    """
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = MappingSerializer

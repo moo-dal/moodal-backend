@@ -1,9 +1,10 @@
 from django.conf.urls import url
 
-from .views import CalendarList, PreferenceListCreate, ScheduleListCreate
+from .views import CalendarList, PreferenceListCreate, ScheduleListCreate, MappingCreate
 
 urlpatterns = [
     url(r'^calendars$', CalendarList.as_view()),
     url(r'^preferences$', PreferenceListCreate.as_view()),
     url(r'^schedules$', ScheduleListCreate.as_view()),
+    url(r'^mapping$', MappingCreate.as_view()),
 ]
