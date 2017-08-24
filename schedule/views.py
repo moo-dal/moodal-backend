@@ -66,6 +66,8 @@ class PreferenceListCreate(generics.ListCreateAPIView):
 class MappingCreate(generics.CreateAPIView):
     """
     공유 달력의 일정을 개인 달력으로 가져옵니다.
+    
+    원하는 공유 달력 일정의 schedule_id 값만 파라미터로 요청하면 됩니다.
     """
     authentication_classes = (JWTAuthentication, )
     serializer_class = MappingSerializer
@@ -74,6 +76,8 @@ class MappingCreate(generics.CreateAPIView):
 class ScheduleRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
     개인 달력의 일정을 공유 달력에 추가할때 / 일정을 삭제할때 사용합니다.
+    
+    올리고자 하는 공유 달력의 calendar_id 를 파라미터로 요청합니다.
     
     현재는 calendar_id 파라미터만 처리합니다.
     나머지 파라미터들은 기존과 동일한 값을 올려줘야 합니다.
