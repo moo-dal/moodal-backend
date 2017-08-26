@@ -2,9 +2,9 @@ from django.db.models import Q
 from rest_framework import generics
 
 from accounts.authentications import JWTAuthentication
-from .serializers import CalendarSerializer, PreferenceSerializer, ScheduleSerializer
 from .filters import ScheduleListFilter
 from .models import Calendar, Preference, Schedule
+from .serializers import CalendarSerializer, PreferenceSerializer, ScheduleSerializer, MappingSerializer
 
 
 class ScheduleListCreate(generics.ListCreateAPIView):
@@ -61,3 +61,13 @@ class PreferenceListCreate(generics.ListCreateAPIView):
     def get_queryset(self):
         user_id = self.request.user.id
         return Preference.objects.filter(user_id=user_id)
+
+
+class MappingCreate(generics.CreateAPIView):
+    """
+    공유 달력의 일정을 개인 달력으로 가져옵니다.
+    
+    원하는 공유 달력 일정의 schedule_id 값만 파라미터로 요청하면 됩니다.
+    """
+    authentication_classes = (JWTAuthentication, )
+    serializer_class = MappingSerializer

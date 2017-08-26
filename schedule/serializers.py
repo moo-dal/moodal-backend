@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers
 
-from .models import Calendar, Preference, Schedule, User
+from .models import Calendar, Mapping, Preference, Schedule, User
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
@@ -68,3 +68,15 @@ class PreferenceSerializer(serializers.Serializer):
             calendar = Calendar.objects.get(pk=calendar_id)
             user = User.objects.get(pk=user_id)
             return Preference.objects.create(calendar=calendar, user=user)
+
+
+class MappingSerializer(serializers.Serializer):
+    is_public = serializers.BooleanField()
+    schedule_id = serializers.IntegerField()
+
+    def create(self, validated_data):
+        user_id = self.context['request'].user.id
+        schedule_id = validated_data["schedule_id"]
+        is_public = validated_data["is_public"]
+        mapping = Mapping.objects.create(user_id=user_id, schedule_id=schedule_id, is_public=is_public)
+        return mapping
