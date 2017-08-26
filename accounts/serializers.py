@@ -54,3 +54,11 @@ class TokenSerializer(serializers.Serializer):
         }
 
         return instance
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="username")
+
+    class Meta:
+        model = User
+        fields = ("id", "name", )
